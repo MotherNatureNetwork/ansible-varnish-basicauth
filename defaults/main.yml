@@ -1,0 +1,6 @@
+---
+# defaults file for mnn.varnish-basicauth
+
+varnish_version: 4.0.3
+
+varnish_basic_auth_vmod_repo: http://git.gnu.org.ua/cgit/vmod-basicauth.git

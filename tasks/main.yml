@@ -1,0 +1,68 @@
+---
+# tasks file for mnn.varnish-basicauth
+
+- name: Install requirements.
+  sudo: yes
+  apt: pkg={{ item }}
+       state=installed
+  with_items:
+    - git-core
+    - zlib1g-dev
+    - automake
+    - build-essential
+    - libtool
+    - libssl-dev
+    - libreadline-dev
+    - libyaml-dev
+    - libsqlite3-dev
+    - ncurses-dev
+    - sqlite3
+    - libxml2-dev
+    - libxslt1-dev
+    - libpcre3-dev
+    - libcurl4-openssl-dev
+    - python-docutils
+    - python-software-properties
+    - libvarnishapi-dev
+
+- name: Get Varnish Source
+  get_url: url=https://repo.varnish-cache.org/source/varnish-{{ varnish_version }}.tar.gz
+           dest=/home/{{ ansible_ssh_user }}
+
+- name: Unpack Varnish source
+  unarchive: src=/home/{{ ansible_ssh_user}}/varnish-{{ varnish_version }}.tar.gz
+             dest=/home/{{ ansible_ssh_user }}
+             copy=no
+
+- name: Autogen Varnish
+  command: ./autogen.sh
+           chdir=/home/{{ ansible_ssh_user }}/varnish-{{ varnish_version }}
+
+- name: Configure Varnish
+  command: ./configure --prefix=/usr
+           chdir=/home/{{ ansible_ssh_user }}/varnish-{{ varnish_version }}
+
+- name: Make Varnish
+  command: make
+           chdir=/home/{{ ansible_ssh_user }}/varnish-{{ varnish_version }}
+
+- name: Get Varnish Basic Auth VMOD
+  git: repo=http://git.gnu.org.ua/cgit/vmod-basicauth.git
+       dest=/home/{{ ansible_ssh_user }}/vmod-basicauth
+
+- name: Bootstrap Basic Auth VMOD
+  command: ./bootstrap
+           chdir=/home/{{ ansible_ssh_user }}/vmod-basicauth
+
+- name: Configure VMOD
+  command: ./configure VARNISHSRC=/home/{{ ansible_ssh_user }}/varnish-{{ varnish_version }}
+           chdir=/home/{{ ansible_ssh_user }}/vmod-basicauth
+
+- name: Make VMOD
+  command: make
+           chdir=/home/{{ ansible_ssh_user }}/vmod-basicauth
+
+- name: Install VMOD
+  sudo: yes
+  command: make install
+           chdir=/home/{{ ansible_ssh_user }}/vmod-basicauth

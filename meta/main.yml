@@ -1,0 +1,8 @@
+---
+galaxy_info:
+  author: Justin Caratzas <bigjust@lambdaphil.es>
+  description: Installs Varnish Basic Auth VMOD
+  company: Mother Nature Network
+  license: GPLv3
+  min_ansible_version: 1.2
+dependencies: []
