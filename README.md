@@ -1,5 +1,5 @@
-Role Name
-=========
+Ansible Varnish BasicAuth VMOD
+==============================
 
 Installs the Varnish basic auth VMOD
 (https://www.varnish-cache.org/vmod/basicauth).
